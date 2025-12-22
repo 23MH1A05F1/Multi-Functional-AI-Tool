@@ -1,0 +1,68 @@
+flask
+transformers
+torch
+PyPDF2
+youtube-transcript-api
+
+
+// flask 
+A lightweight Python web framework used to build backend servers, REST APIs, and web applications.
+
+// transformers
+
+A library providing pre-trained NLP models (BERT, GPT, T5, DistilBERT, etc.).
+
+Used for:
+
+Extracting keywords from text
+
+Generating AI suggestions  
+
+Summarizing resumes
+
+Classifying skills
+
+Building emotion detection, text analysis, search ranking, etc.
+
+// Torch ( PyTorch)
+
+Purpose:
+A deep learning framework used to train, load, and run AI/ML models.
+
+Used for:
+
+Running transformer models faster
+
+Training custom models (emotion detection, skill prediction)
+
+Using GPU acceleration
+
+// PyPDF2
+A Python library used to read, extract, and parse text from PDF files.
+
+Used for:
+
+Reading uploaded resumes
+
+Extracting content for ATS scoring
+
+Preprocessing before NLP models .
+User uploads resume.pdf → PyPDF2 extracts the text → Model analyses it.
+
+//youtube-transcript-api
+
+Purpose:
+A Python library that fetches subtitles/transcripts from YouTube videos.
+
+Used for:
+
+Converting videos into readable text
+
+Analyzing content using NLP
+
+Creating learning tools, summarizers, study notes
+
+Building "AI Video Summarizer" for hackathons
+
+Example use-case:
+Link of a YouTube lecture → fetch transcript → summarize → generate notes.

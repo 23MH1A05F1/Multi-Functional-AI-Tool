@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI Translator</title>
+
+<!-- icons & fonts -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary-color:#00c6ff;
+  --secondary-color:#007bff;
+  --bg-color:#1a1a1a;
+  --card-bg:#222;
+  --text-color:#fff;
+  --sub-text:#ccc;
+  --input-bg:#333;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Roboto',system-ui,Segoe UI,Arial;
+  background: linear-gradient(270deg, #1a1a1a, #222, #1a1a1a);
+  background-size: 600% 600%;
+  color:var(--text-color);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  overflow-x:hidden;
+  animation: backgroundShift 15s ease infinite;
+}
+body.light{
+  --bg-color:#f7f7f7;
+  --card-bg:#fff;
+  --text-color:#111;
+  --sub-text:#555;
+  --input-bg:#eee;
+  background: linear-gradient(270deg, #f7f7f7, #ddd, #f7f7f7);
+  animation: backgroundShift 15s ease infinite;
+}
+
+/* page background animation */
+@keyframes backgroundShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* Container */
+.container{
+  width:100%;
+  max-width:920px;
+  background: linear-gradient(135deg, #222, #333, #222);
+  border-radius:16px;
+  padding:22px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  animation: fadeInScale 0.5s ease forwards, containerBG 10s ease infinite;
+  position: relative;
+  z-index:1;
+  background-size: 400% 400%;
+}
+
+/* container background animation */
+@keyframes containerBG{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* header */
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.header h1{font-family:'Orbitron',sans-serif;color:var(--primary-color);font-size:22px;margin:0; animation: slideInLeft 0.6s;}
+.mode-toggle{cursor:pointer;font-size:20px;color:var(--sub-text)}
+
+/* language row */
+.languages-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.dropdown-container{position:relative;flex:1;min-width:180px}
+.dropdown-toggle{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+  padding:12px 16px;border-radius:12px;background:var(--input-bg);cursor:pointer;
+  transition:transform 0.2s, background 0.3s;
+}
+.dropdown-toggle:hover{transform:scale(1.02)}
+.dropdown-toggle span{flex:1;margin-left:8px}
+.dropdown-menu{
+  position:absolute;left:0;top:108%;width:100%;max-height:240px;overflow:auto;
+  background:var(--input-bg);border-radius:0 0 12px 12px;padding:8px;
+  display:none;z-index:50;
+  transform:translateY(-10px); opacity:0;
+  transition:0.3s;
+}
+.dropdown-container.active .dropdown-menu{
+  display:block;
+  transform:translateY(0); opacity:1;
+}
+.dropdown-menu li{
+  list-style:none;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--text-color);
+  transition:0.2s;
+}
+.dropdown-menu li:hover{background:rgba(0,0,0,0.15); transform:translateX(4px);}
+
+/* textareas */
+.panel{margin-bottom:12px}
+textarea{
+  width:100%;min-height:140px;border-radius:12px;padding:14px;border:none;background:var(--input-bg);
+  color:var(--text-color);resize:vertical;font-size:15px;outline:none;
+  transition:0.3s;
+}
+textarea:focus{box-shadow:0 0 12px var(--primary-color); transform:scale(1.01);}
+
+/* swap */
+.swap-row{display:flex;justify-content:center;margin:8px 0}
+.swap-position{
+  width:48px;height:48px;border-radius:50%;background:var(--primary-color);display:flex;
+  align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 20px rgba(0,198,255,0.18);
+  transition:transform 0.3s;
+  animation: bounce 1s infinite alternate;
+}
+.swap-position:hover{transform:scale(1.15) rotate(10deg);}
+@keyframes bounce{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-5px);}
+}
+
+/* bottom actions */
+.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.card-bottom-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+label.upload{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:var(--primary-color);
+  color:#111;font-weight:600;cursor:pointer;transition:0.2s;
+}
+label.upload:hover{opacity:0.9; transform:scale(1.03);}
+button{
+  padding:10px 16px;border-radius:12px;border:none;font-weight:600;cursor:pointer;transition:0.3s;
+}
+button#download-btn{background:var(--primary-color);color:#111}
+button#clear-btn{background:#ff4d4d;color:#fff;}
+button:hover{opacity:0.85; transform:scale(1.05);}
+.status{font-size:13px;color:var(--sub-text); animation: fadeStatus 0.5s;}
+@keyframes fadeStatus{0%{opacity:0} 100%{opacity:1}}
+
+/* responsive */
+@media(max-width:720px){
+  .languages-row{flex-direction:column}
+  .dropdown-container{min-width:unset}
+}
+
+/* slide in animation for header */
+@keyframes slideInLeft{
+  from{opacity:0; transform:translateX(-30px);}
+  to{opacity:1; transform:translateX(0);}
+}
+
+/* fadeIn container */
+@keyframes fadeInScale{
+  from{opacity:0; transform:scale(0.95);}
+  to{opacity:1; transform:scale(1);}
+}
+</style>
+</head>
+<body>
+
+<div class="container" role="main">
+  <div class="header">
+    <h1>AI Translator</h1>
+    <i id="themeToggle" class="fa fa-moon mode-toggle" title="Toggle theme"></i>
+  </div>
+
+  <div class="languages-row">
+    <div class="dropdown-container" id="input-language">
+      <div class="dropdown-toggle">
+        <span style="display:flex;align-items:center;"><i class="fa fa-globe"></i>&nbsp;<span class="selected" data-value="auto">Auto Detect</span></span>
+        <i class="fa fa-chevron-down"></i>
+      </div>
+      <ul class="dropdown-menu"></ul>
+    </div>
+
+    <div class="dropdown-container" id="output-language">
+      <div class="dropdown-toggle">
+        <span style="display:flex;align-items:center;"><i class="fa fa-globe"></i>&nbsp;<span class="selected" data-value="en">English</span></span>
+        <i class="fa fa-chevron-down"></i>
+      </div>
+      <ul class="dropdown-menu"></ul>
+    </div>
+  </div>
+
+  <div class="panel">
+    <textarea id="input-text" placeholder="Enter your text here (or upload a PDF/TXT)"></textarea>
+  </div>
+
+  <div class="swap-row">
+    <div class="swap-position" id="swapBtn" title="Swap languages and text">
+      <i class="fa fa-exchange-alt" style="color:#06121a"></i>
+    </div>
+  </div>
+
+  <div class="panel">
+    <textarea id="output-text" placeholder="Translated text will appear here..." disabled></textarea>
+  </div>
+
+  <div class="actions">
+    <div class="card-bottom-left">
+      <label class="upload" for="upload-document" id="upload-label">
+        <i class="fa fa-cloud-upload-alt"></i> <span id="upload-title">Choose File</span>
+        <input id="upload-document" type="file" accept=".txt,.pdf" style="display:none"/>
+      </label>
+      <div class="status" id="status">Ready</div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button id="clear-btn"><i class="fa fa-trash"></i> Clear</button>
+      <button id="download-btn"><i class="fa fa-download"></i> Download</button>
+    </div>
+  </div>
+</div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<script>
+/* ===== Sample languages ===== */
+const languages = [
+  {name:"Auto", native:"Detect", code:"auto"},
+  {name:"English", native:"English", code:"en"},
+  {name:"French", native:"Français", code:"fr"},
+  {name:"Hindi", native:"हिन्दी", code:"hi"},
+  {name:"Spanish", native:"Español", code:"es"},
+  {name:"German", native:"Deutsch", code:"de"},
+  {name:"Chinese", native:"中文", code:"zh-CN"},
+  {name:"Japanese", native:"日本語", code:"ja"},
+  {name:"Russian", native:"Русский", code:"ru"}
+];
+
+/* ===== DOM elements ===== */
+const inputLanguageDropdown = document.getElementById('input-language');
+const outputLanguageDropdown = document.getElementById('output-language');
+const inputTextElem = document.getElementById('input-text');
+const outputTextElem = document.getElementById('output-text');
+const uploadInput = document.getElementById('upload-document');
+const uploadTitle = document.getElementById('upload-title');
+const statusEl = document.getElementById('status');
+const downloadBtn = document.getElementById('download-btn');
+const swapBtn = document.getElementById('swapBtn');
+const themeToggle = document.getElementById('themeToggle');
+const clearBtn = document.getElementById('clear-btn');
+
+/* ===== Populate dropdowns ===== */
+function populateDropdown(dropdown, items, selectedCode){
+  const ul = dropdown.querySelector('.dropdown-menu');
+  ul.innerHTML = '';
+  items.forEach(item=>{
+    const li=document.createElement('li');
+    li.textContent = `${item.name} (${item.native})`;
+    li.dataset.value = item.code;
+    ul.appendChild(li);
+  });
+  if(selectedCode){
+    const sel = dropdown.querySelector('.selected');
+    const found = items.find(i=>i.code===selectedCode);
+    if(found) sel.textContent = `${found.name} (${found.native})`;
+    sel.dataset.value = selectedCode;
+  }
+}
+populateDropdown(inputLanguageDropdown, languages,'auto');
+populateDropdown(outputLanguageDropdown, languages,'en');
+
+/* ===== Dropdown behavior ===== */
+const dropdowns = document.querySelectorAll('.dropdown-container');
+dropdowns.forEach(dropdown=>{
+  const toggle = dropdown.querySelector('.dropdown-toggle');
+  toggle.addEventListener('click', ()=>dropdown.classList.toggle('active'));
+  dropdown.querySelector('.dropdown-menu').addEventListener('click', ev=>{
+    const li = ev.target.closest('li'); if(!li) return;
+    dropdown.querySelectorAll('li').forEach(x=>x.classList.remove('active'));
+    li.classList.add('active');
+    const sel = dropdown.querySelector('.selected');
+    sel.textContent = li.textContent;
+    sel.dataset.value = li.dataset.value;
+    dropdown.classList.remove('active');
+    translate();
+  });
+});
+document.addEventListener('click', e=>{
+  dropdowns.forEach(dd => { if(!dd.contains(e.target)) dd.classList.remove('active'); });
+});
+
+/* ===== Swap languages & text ===== */
+swapBtn.addEventListener('click', ()=>{
+  const inSel = inputLanguageDropdown.querySelector('.selected');
+  const outSel = outputLanguageDropdown.querySelector('.selected');
+  const tempText = inputTextElem.value;
+  inputTextElem.value = outputTextElem.value;
+  outputTextElem.value = tempText;
+  const tmp = inSel.dataset.value;
+  inSel.dataset.value = outSel.dataset.value;
+  outSel.dataset.value = tmp;
+  const tmpLabel = inSel.textContent;
+  inSel.textContent = outSel.textContent;
+  outSel.textContent = tmpLabel;
+  translate();
+});
+
+/* ===== Clear button ===== */
+clearBtn.addEventListener('click', ()=>{
+  inputTextElem.value='';
+  outputTextElem.value='';
+  statusEl.textContent='Ready';
+  uploadTitle.textContent='Choose File';
+});
+
+/* ===== File upload (PDF/TXT) ===== */
+uploadInput.addEventListener('change', async e=>{
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  uploadTitle.textContent=file.name;
+  statusEl.textContent='Reading file…';
+  try{
+    if(file.type==='application/pdf'||/\.pdf$/i.test(file.name)){
+      const arrayBuffer = await file.arrayBuffer();
+      const text = await extractTextFromPDF(arrayBuffer);
+      inputTextElem.value=text.trim();
+      statusEl.textContent='File loaded (PDF).';
+      translate();
+    }else if(file.type.startsWith('text')||/\.txt$/i.test(file.name)){
+      const text = await file.text();
+      inputTextElem.value=text;
+      statusEl.textContent='File loaded (TXT).';
+      translate();
+    }else{
+      alert('Unsupported file type. Please upload a .txt or .pdf file.');
+      statusEl.textContent='Ready';
+    }
+  }catch(err){console.error(err);alert('Error reading file');statusEl.textContent='Error';}
+});
+
+/* PDF.js extraction */
+async function extractTextFromPDF(arrayBuffer){
+  const pdf = await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+  let fullText='';
+  for(let p=1;p<=pdf.numPages;p++){
+    const page = await pdf.getPage(p);
+    const content = await page.getTextContent();
+    const strings = content.items.map(item=>item.str);
+    fullText += strings.join(' ') + '\n\n';
+  }
+  return fullText;
+}
+
+/* ===== Translation ===== */
+let translating=false;
+async function translate(){
+  const source = inputTextElem.value.trim();
+  const sl = inputLanguageDropdown.querySelector('.selected').dataset.value || 'auto';
+  const tl = outputLanguageDropdown.querySelector('.selected').dataset.value || 'en';
+  if(!source){ outputTextElem.value=''; statusEl.textContent='Ready'; return;}
+  statusEl.textContent='Translating…';
+  outputTextElem.value='Translating…';
+  translating=true;
+  try{
+    const translated = await translateViaGoogleChunked(source, sl, tl);
+    outputTextElem.value=translated;
+    statusEl.textContent='Translated';
+  }catch(err){console.error(err);outputTextElem.value='';statusEl.textContent='Translation error'; alert('Translation failed');}
+  finally{translating=false;}
+}
+
+/* chunked translation */
+async function translateViaGoogleChunked(text, sl='auto', tl='en'){
+  const CHUNK=1500;
+  let result='';
+  for(let i=0;i<text.length;i+=CHUNK){
+    const chunk=text.slice(i,i+CHUNK);
+    const url=`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=${encodeURIComponent(tl)}&dt=t&q=${encodeURIComponent(chunk)}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    const part = json[0].map(item=>item[0]).join('');
+    result+=part;
+    await new Promise(r=>setTimeout(r,100));
+  }
+  return result;
+}
+
+/* auto-translate typing */
+let timer=null;
+inputTextElem.addEventListener('input', ()=>{
+  if(inputTextElem.value.length>12000){ inputTextElem.value=inputTextElem.value.slice(0,12000); alert('Max 12000 chars'); }
+  clearTimeout(timer);
+  timer=setTimeout(()=>{ if(!translating) translate();},600);
+});
+
+/* download */
+downloadBtn.addEventListener('click', ()=>{
+  const text = outputTextElem.value;
+  if(!text){ alert('No translated text to download'); return;}
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`translated.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* theme toggle */
+themeToggle.addEventListener('click', ()=>{
+  document.body.classList.toggle('light');
+  themeToggle.classList.toggle('fa-moon');
+  themeToggle.classList.toggle('fa-sun');
+});
+
+/* ready */
+statusEl.textContent='Ready';
+</script>
+</body>
+</html>

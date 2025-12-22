@@ -1,0 +1,107 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+
+<head> 
+	<meta charset="UTF-8"> 
+	<meta name="viewport" content= 
+"width=device-width, initial-scale=1.0"> 
+	<title> 
+	BG REMOVE 
+	</title> 
+	<link rel="stylesheet" href="bg_remove.css"> 
+</head> 
+
+<body> 
+	<!-- Animated AI Background Canvas -->
+	<canvas id="aiCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;"></canvas>
+	<div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; position: relative; z-index: 1;">
+		<button id="modeToggle" class="mode-toggle-btn">🌙</button>
+	</div>
+	<div class="container" style="position: relative; z-index: 2;"> 
+	<header class="container-header"><h1>BG REMOVE</h1></header>
+		<div class="d-flex mb-4"> 
+			<div id="imagePreview" class="image-preview"></div> 
+			<div id="bgRemove" class="image-preview"></div> 
+		</div> 
+		<div class="input-file"> 
+			<label for="userImg" class="info_text"> 
+				Select a File 
+			</label> 
+			<input type="file" id="userImg"
+				class="form-control-file" required> 
+		</div> 
+		<a id="downloadButton" class="btn btn-download"
+			style="display: none;"> 
+			Download 
+		</a> 
+		<div> 
+			<button id="removeBackground" class="btn btn-primary"> 
+				Remove Background 
+			</button> 
+		</div> 
+	</div> 
+	<script src="bg_remove.js"></script> 
+
+		<!-- Animated AI Background Script (from ammu.html) -->
+		<script>
+		// Animated gradient backgrounds for light and dark mode
+		const canvas = document.getElementById('aiCanvas');
+		const ctx = canvas.getContext('2d');
+		let width = canvas.width = window.innerWidth;
+		let height = canvas.height = window.innerHeight;
+		let t = 0;
+		function drawAnimatedBackground() {
+			ctx.clearRect(0, 0, width, height);
+			t += 0.003;
+			if (!document.body.classList.contains('dark-mode')) {
+				// Light mode: animated pastel linear gradient
+				const grad = ctx.createLinearGradient(
+					width * (0.2 + 0.2 * Math.sin(t)),
+					height * (0.2 + 0.2 * Math.cos(t)),
+					width * (0.8 + 0.2 * Math.cos(t)),
+					height * (0.8 + 0.2 * Math.sin(t))
+				);
+				grad.addColorStop(0, '#a1c4fd');
+				grad.addColorStop(0.33, '#c2e9fb');
+				grad.addColorStop(0.66, '#fbc2eb');
+				grad.addColorStop(1, '#fcb69f');
+				ctx.fillStyle = grad;
+				ctx.fillRect(0, 0, width, height);
+			} else {
+				// Dark mode: animated blue/purple radial gradient (original size)
+				const r = 0.5 + 0.2 * Math.sin(t);
+				const grad = ctx.createRadialGradient(
+					width/2, height/2, height * 0.1 * (1 + 0.2 * Math.cos(t)),
+					width/2, height/2, Math.max(width, height) * r
+				);
+				grad.addColorStop(0, '#232b5a');
+				grad.addColorStop(0.4, '#3D52A0');
+				grad.addColorStop(0.7, '#232323');
+				grad.addColorStop(1, '#181828');
+				ctx.fillStyle = grad;
+				ctx.fillRect(0, 0, width, height);
+			}
+			requestAnimationFrame(drawAnimatedBackground);
+		}
+		drawAnimatedBackground();
+		window.addEventListener('resize', () => {
+			width = canvas.width = window.innerWidth;
+			height = canvas.height = window.innerHeight;
+		});
+		</script>
+
+	<script>
+		// Dark/Light mode toggle (icon only)
+		const modeToggle = document.getElementById('modeToggle');
+		modeToggle.addEventListener('click', function() {
+			const isDark = document.body.classList.toggle('dark-mode');
+			if (isDark) {
+				modeToggle.textContent = '☀️';
+			} else {
+				modeToggle.textContent = '🌙';
+			}
+		});
+	</script>
+</body> 
+
+</html>

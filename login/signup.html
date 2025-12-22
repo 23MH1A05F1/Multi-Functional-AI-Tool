@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futuristic Chatbot Login & Sign Up</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',sans-serif;}
+body{background:#1a1a1a;color:#fff;overflow:hidden;transition:0.3s;}
+#aiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+
+/* Dark/Light Mode Toggle */
+.theme-toggle{
+  position: fixed; top:20px; right:30px; font-size:24px; cursor:pointer; z-index:10; color:#00c6ff; transition:0.3s;
+}
+
+/* Form Container */
+.form-container{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  background: rgba(0,0,0,0.35); backdrop-filter: blur(12px);
+  padding:50px 30px 30px; border-radius:20px; width:350px; text-align:center; z-index:1;
+  box-shadow: 0 0 40px rgba(0,198,255,0.2);
+  transition: 0.3s;
+}
+
+/* Robot Image */
+.form-container img{
+  width:160px; margin-bottom:20px;
+  animation: floatAI 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px #00c6ff) drop-shadow(0 0 40px #00c6ff) drop-shadow(0 0 60px #00c6ff);
+  border-radius:50%;
+}
+@keyframes floatAI{
+  0%{transform:translateY(0px) rotate(0deg) scale(1);}
+  25%{transform:translateY(-12px) rotate(2deg) scale(1.03);}
+  50%{transform:translateY(0px) rotate(0deg) scale(1);}
+  75%{transform:translateY(-12px) rotate(-2deg) scale(1.03);}
+  100%{transform:translateY(0px) rotate(0deg) scale(1);}
+}
+
+/* Form Text */
+.form-container h2{
+  margin-bottom:25px;
+  font-family:'Orbitron', sans-serif;
+  background: linear-gradient(90deg, #00c6ff, #007bff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-size:32px;
+}
+.form-container input{
+  width:100%; padding:12px 15px; margin:10px 0; border-radius:8px; border:none; outline:none; font-size:16px;
+  background: rgba(255,255,255,0.05); color:#fff;
+  transition:0.3s;
+}
+.form-container input:focus{background: rgba(0,198,255,0.1);}
+
+.form-container button{
+  width:100%; padding:12px; margin-top:15px; border:none; border-radius:8px;
+  background:#00c6ff; color:#111; font-weight:bold; font-size:16px; cursor:pointer;
+  box-shadow:0 0 15px #00c6ff;
+  transition:0.3s;
+}
+.form-container button:hover{
+  background:#007bff; color:#fff; box-shadow:0 0 25px #00c6ff;
+}
+
+/* Google Button */
+.google-btn{
+  width:100%; padding:10px; margin-top:10px; border:none; border-radius:8px;
+  background:#fff; color:#111; font-weight:bold; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 10px rgba(0,0,0,0.2); transition:0.3s;
+}
+.google-btn i{margin-right:10px;}
+.google-btn:hover{background:#f0f0f0;}
+
+/* Toggle link */
+.toggle-link{
+  margin-top:15px; display:block; color:#00c6ff; cursor:pointer; transition:0.3s;
+}
+.toggle-link:hover{text-decoration:underline; color:#007bff;}
+
+/* Light Mode */
+body.light{
+  background:#f7f7f7;color:#222;
+}
+body.light .form-container{
+  background: rgba(255,255,255,0.35);
+  box-shadow: 0 0 40px rgba(0,198,255,0.1);
+}
+body.light .form-container h2{-webkit-text-fill-color: #007bff;}
+body.light .form-container input{background: rgba(255,255,255,0.2); color:#222;}
+body.light .form-container button{background:#007bff; color:#fff;}
+body.light .google-btn{background:#fff; color:#111;}
+body.light .toggle-link{color:#007bff;}
+
+/* Responsive */
+@media(max-width:400px){.form-container{width:90%;padding:40px 20px;}}
+</style>
+</head>
+<body>
+
+<!-- AI Background Canvas -->
+<canvas id="aiCanvas"></canvas>
+
+<!-- Dark/Light Mode Toggle -->
+<i class="fa fa-moon theme-toggle" id="themeToggle"></i>
+
+<!-- Form Container -->
+<div class="form-container" id="formContainer">
+  <img src="https://www.alphansotech.com/Frontend/img/AI-ML/robot-stand.png" alt="Chatbot">
+  <h2 id="formTitle">Login</h2>
+  <input type="email" placeholder="Email" id="email">
+  <input type="password" placeholder="Password" id="password">
+  <input type="password" placeholder="Confirm Password" id="confirmPassword" style="display:none;">
+  <button id="submitBtn">Login</button>
+  <button class="google-btn" id="googleBtn"><i class="fab fa-google"></i> Continue with Google</button>
+  <span class="toggle-link" id="toggleForm">Don't have an account? Sign Up</span>
+</div>
+
+<script>
+// Toggle Login / Sign Up
+const toggleForm = document.getElementById('toggleForm');
+const formTitle = document.getElementById('formTitle');
+const submitBtn = document.getElementById('submitBtn');
+const confirmPassword = document.getElementById('confirmPassword');
+const googleBtn = document.getElementById('googleBtn');
+
+toggleForm.addEventListener('click', ()=>{
+  if(formTitle.innerText==="Login"){
+    formTitle.innerText="Sign Up";
+    submitBtn.innerText="Sign Up";
+    confirmPassword.style.display="block";
+    toggleForm.innerText="Already have an account? Login";
+  } else{
+    formTitle.innerText="Login";
+    submitBtn.innerText="Login";
+    confirmPassword.style.display="none";
+    toggleForm.innerText="Don't have an account? Sign Up";
+  }
+});
+
+// Redirect buttons to ammu.html
+submitBtn.addEventListener('click', ()=>{
+  window.location.href = "http://127.0.0.1:5500/ammu.html";
+});
+googleBtn.addEventListener('click', ()=>{
+  window.location.href = "http://127.0.0.1:5500/ammu.html";
+});
+
+// Dark/Light Mode Toggle
+const toggleBtn = document.getElementById('themeToggle');
+toggleBtn.addEventListener('click', ()=>{
+  document.body.classList.toggle('light');
+  toggleBtn.classList.toggle('fa-moon');
+  toggleBtn.classList.toggle('fa-sun');
+});
+
+// AI Neural Network Background
+const canvas = document.getElementById('aiCanvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+const nodes = [];
+const nodeCount = 80;
+
+for(let i=0;i<nodeCount;i++){
+  nodes.push({x:Math.random()*width, y:Math.random()*height, vx:(Math.random()-0.5)*0.8, vy:(Math.random()-0.5)*0.8});
+}
+
+function animate(){
+  ctx.clearRect(0,0,width,height);
+  for(let i=0;i<nodeCount;i++){
+    for(let j=i+1;j<nodeCount;j++){
+      const dx=nodes[i].x-nodes[j].x;
+      const dy=nodes[i].y-nodes[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<180){
+        ctx.strokeStyle='rgba(0,198,255,'+(1-dist/180)+')';
+        ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(nodes[i].x,nodes[i].y); ctx.lineTo(nodes[j].x,nodes[j].y); ctx.stroke();
+      }
+    }
+  }
+  nodes.forEach(node=>{
+    node.x+=node.vx; node.y+=node.vy;
+    if(node.x<0||node.x>width) node.vx*=-1;
+    if(node.y<0||node.y>height) node.vy*=-1;
+    ctx.fillStyle='#00c6ff';
+    ctx.beginPath(); ctx.arc(node.x,node.y,3,0,Math.PI*2); ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+window.addEventListener('resize', ()=>{width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight;});
+</script>
+
+</body>
+</html>

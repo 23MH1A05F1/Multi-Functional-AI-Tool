@@ -1,0 +1,43 @@
+name: Deploy Full Stack App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Build backend (if applicable)
+        working-directory: ./backend
+        run: npm run build || echo "No build step for backend"
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend/sheet-analysis
+        run: npm install
+
+      - name: Build frontend
+        working-directory: ./frontend/sheet-analysis
+        run: npm run build
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: 'your-heroku-app-name'  # Replace with your Heroku app name
+          heroku_email: 'your-email@example.com'  # Replace with your Heroku account email
+          usedocker: false

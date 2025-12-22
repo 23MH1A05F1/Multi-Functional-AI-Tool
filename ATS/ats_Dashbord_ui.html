@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced ATS Resume Checker (Offline)</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- PDF.js -->
+<script src="libs/pdf.js"></script>
+
+<!-- Mammoth.js for DOCX -->
+<script src="libs/mammoth.browser.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>ATS Resume Checker</h1>
+    
+    <div class="card">
+        <h3>Upload Resume (PDF or DOCX)</h3>
+        <input type="file" id="resumeFile" accept=".pdf,.docx">
+    </div>
+
+    <div class="card">
+        <h3>Paste Job Description</h3>
+        <textarea id="jobDesc" placeholder="Paste JD here..."></textarea>
+    </div>
+
+    <button id="analyzeBtn">Analyze Resume</button>
+
+    <div id="dashboard">
+
+        <div class="result-card">
+            <h2>ATS Score</h2>
+            <p id="atsScore">0%</p>
+        </div>
+
+        <div class="result-card">
+            <h2>Section Scores</h2>
+            <ul id="sectionScores"></ul>
+        </div>
+
+        <div class="result-card">
+            <h2>Extracted Skills</h2>
+            <ul id="skillsList"></ul>
+        </div>
+
+        <div class="result-card">
+            <h2>Missing Keywords</h2>
+            <ul id="missingKeywords"></ul>
+        </div>
+
+        <div class="result-card">
+            <h2>Keyword Highlighting</h2>
+            <div id="highlightBox"></div>
+        </div>
+
+        <div class="result-card">
+            <h2>Suggestions</h2>
+            <ul id="suggestions"></ul>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

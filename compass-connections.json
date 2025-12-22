@@ -1,0 +1,24 @@
+{
+  "type": "Compass Connections",
+  "version": {
+    "$numberInt": "1"
+  },
+  "connections": [
+    {
+      "id": "a84c3ee7-8122-4f9d-ab69-581f7681850f",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1760637040651"
+        }
+      },
+      "favorite": {
+        "name": "harthika"
+      },
+      "savedConnectionType": "recent",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost:27017/",
+        "oidc": {}
+      }
+    }
+  ]
+}

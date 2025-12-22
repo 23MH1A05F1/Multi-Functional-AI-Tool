@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Purpose AI Tool for Education</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',sans-serif;}
+body{background:#0a0a0a;color:#fff;overflow-x:hidden;scroll-behavior:smooth;}
+#aiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;}
+
+/* Navbar */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:20px 50px;background:rgba(10,10,10,0.85);backdrop-filter:blur(10px);position:fixed;width:100%;z-index:10;}
+.logo .chatbot-status{font-size:18px;color:#00c6ff;font-weight:bold;animation:pulseText 2s infinite;}
+@keyframes pulseText{0%,100%{text-shadow:0 0 5px #00c6ff;}50%{text-shadow:0 0 15px #00c6ff;}}
+.nav-links{list-style:none;display:flex;gap:25px;}
+.nav-links li a{text-decoration:none;color:#fff;font-weight:500;transition:0.3s;}
+.nav-links li a:hover{color:#00c6ff;}
+.nav-right{display:flex;align-items:center;gap:15px;}
+.nav-right button{padding:8px 18px;border:none;border-radius:5px;font-weight:bold;cursor:pointer;transition:0.3s;}
+.login-btn{background:transparent;color:#00c6ff;border:2px solid #00c6ff;}
+.login-btn:hover{background:#00c6ff;color:#111;}
+.signup-btn{background:#00c6ff;color:#111;}
+.signup-btn:hover{background:#007bff;}
+.nav-icons i{font-size:20px;cursor:pointer;transition:0.3s;}
+.nav-icons i:hover{color:#00c6ff;}
+
+/* Hero Section */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding-top:80px;}
+.hero img{width:400px;max-width:90%;animation:floatAI 4s ease-in-out infinite;}
+@keyframes floatAI{0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);}}
+.hero h1{font-size:50px;color:#00c6ff;margin:20px 0;}
+.hero p{font-size:18px;color:#ccc;max-width:600px;}
+.btn{background:#00c6ff;border:none;padding:12px 25px;font-size:16px;font-weight:bold;border-radius:6px;color:#fff;cursor:pointer;transition:0.3s;}
+.btn:hover{background:#007bff;}
+
+/* ABOUT SECTION */
+.about{padding:120px 10%;text-align:center;background:rgba(15,15,15,0.85);backdrop-filter:blur(8px);position:relative;}
+.about h2{font-size:40px;color:#00c6ff;margin-bottom:20px;text-shadow:0 0 10px #00c6ff;}
+.about p{font-size:18px;max-width:800px;margin:auto;color:#ccc;line-height:1.7;}
+.about-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:60px;}
+.about-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:35px;border-radius:15px;box-shadow:0 0 20px rgba(0,198,255,0.1);transition:0.5s;opacity:0;transform:translateY(50px);}
+.about-card:hover{transform:translateY(-15px) scale(1.05);box-shadow:0 0 30px rgba(0,198,255,0.3);}
+.about-card i{font-size:45px;color:#00c6ff;margin-bottom:20px;transition:0.3s;}
+.about-card h3{color:#fff;margin-bottom:12px;}
+.about-card p{color:#aaa;font-size:15px;}
+.show{opacity:1 !important;transform:translateY(0) !important;transition:1s ease-out;}
+@media(max-width:900px){.about-cards{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.about-cards{grid-template-columns:1fr;}}
+
+/* FOOTER */
+footer{background:rgba(15,15,15,0.9);backdrop-filter:blur(8px);padding:80px 10% 40px;text-align:center;position:relative;color:#ccc;}
+footer h3{color:#00c6ff;font-size:26px;margin-bottom:20px;text-shadow:0 0 10px #00c6ff;}
+.footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:30px;margin-bottom:25px;}
+.footer-links a{color:#ccc;text-decoration:none;font-weight:500;transition:0.3s;}
+.footer-links a:hover{color:#00c6ff;}
+.social-icons{margin-top:15px;}
+.social-icons i{font-size:24px;margin:0 12px;cursor:pointer;transition:0.3s;}
+.social-icons i:hover{color:#00c6ff;transform:scale(1.3);}
+footer p{font-size:14px;margin-top:30px;color:#888;}
+footer::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:80%;height:2px;background:linear-gradient(90deg,transparent,#00c6ff,transparent);}
+</style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<canvas id="aiCanvas"></canvas>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">
+    <span class="chatbot-status"><span>MULTI-FUNCTIONAL </span><span>AI TOOL</span></span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#about">About</a></li>
+  <li><a href="#" onclick="openTranslator()">Translator</a></li>
+  <li><a href="#" onclick="openLibrary()">Library</a></li>
+  <li><a href="#" onclick="openChat()">Chatbot</a></li>
+  <li><a href="#" onclick="openATSResume()">ATS Resume</a></li>
+  <li><a href="#" onclick="openSummary()">Summarizer</a></li>
+  <li><a href="#" onclick="openExcel()">Excel</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="login-btn" onclick="openLogin()">Login</button>
+    <button class="signup-btn" onclick="openSignUp()">Sign Up</button>
+    <i class="fa fa-moon theme-toggle" id="themeToggle"></i>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <img src="https://www.alphansotech.com/Frontend/img/AI-ML/robot-stand.png" alt="AI Robot">
+  <h1>AI Chatbot</h1>
+  <p>Empowering education with intelligent tools — Chatbot, Summarization, Translation, Excel, and more.</p>
+  <button class="btn" onclick="openChat()">Get Started</button>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="about" id="about">
+  <h2>About Our AI Platform</h2>
+  <p>Our Multi-Purpose AI Tool is designed to revolutionize education. It combines advanced AI technology with user-friendly design, providing a smart space for students, teachers, and lifelong learners to explore knowledge effortlessly.</p>
+
+  <div class="about-cards">
+    <div class="about-card" onclick="openChat()" style="cursor:pointer;">
+      <i class="fa-solid fa-robot"></i>
+      <h3>AI Chatbot</h3>
+      <p>Engage in intelligent conversations and get instant academic assistance.</p>
+    </div>
+    <div class="about-card" onclick="openSummary()" style="cursor:pointer;">
+      <i class="fa-solid fa-file-lines"></i>
+      <h3>Summarization</h3>
+      <p>Convert lengthy notes into concise summaries for quick learning.</p>
+    </div>
+    <div class="about-card" onclick="openTranslator()" style="cursor:pointer;">
+      <i class="fa-solid fa-language"></i>
+      <h3>Text Translator</h3>
+      <p>Translate any educational content across multiple languages instantly.</p>
+    </div>
+    <div class="about-card" onclick="openExcel()" style="cursor:pointer;">
+      <i class="fa-solid fa-table-cells-large"></i>
+      <h3>Excel Workspace</h3>
+      <p>Organize, analyze, and visualize data effortlessly in our smart Excel tool.</p>
+    </div>
+    <div class="about-card" onclick="openLibrary()" style="cursor:pointer;">
+      <i class="fa-solid fa-book-open-reader"></i>
+      <h3>Online Library</h3>
+      <p>Access thousands of books and AI-curated study materials in one click.</p>
+    </div>
+    <div class="about-card" onclick="openATSResume()" style="cursor:pointer;">
+      <i class="fa-solid fa-image"></i>
+      <h3>ATS resume</h3>
+      <p>An ATS resume is a simple, keyword-rich, software-readable resume designed to pass Applicant Tracking Systems.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <h3>Multi-Purpose AI Tool</h3>
+  <div class="footer-links">
+    <a href="#">Home</a>
+    <a href="#about">About</a>
+  <a href="#" onclick="openChat()">Chatbot</a>
+  <a href="#" onclick="openLibrary()">Library</a>
+  <a href="#" onclick="openSummary()">Summarizer</a>
+  <a href="#" onclick="openTranslator()">Translator</a>
+  <a href="#" onclick="openATSResume()">ATS Resume</a>
+  <a href="#" onclick="openExcel()">Excel</a>
+  </div>
+  <div class="social-icons">
+    <i class="fab fa-github"></i>
+    <i class="fab fa-linkedin"></i>
+    <i class="fab fa-twitter"></i>
+  </div>
+  <p>© 2025 Multi-Functional AI Tool for Education | Developed by Gowthami</p>
+</footer>
+
+<script>
+// Link functions
+function openChat(){window.location.href="http://127.0.0.1:5500/offlinechat/index.html";}
+function openLogin(){window.location.href="http://127.0.0.1:5500/login/signup.html";}
+function openSignUp(){window.location.href="http://127.0.0.1:5500/login/signup.html";}
+function openTranslator(){window.location.href="http://127.0.0.1:5500/Translator/index.html";}
+function openLibrary(){window.location.href="http://127.0.0.1:5500/my_library/library.html";}
+function openATSResume(){window.location.href="http://127.0.0.1:5500/ATS/ats.html";}
+function openSummary(){window.location.href="http://127.0.0.1:5500/Summary/frontend/index.html";}
+function openExcel(){window.location.href="https://teja-0504.github.io/Excel/";}
+
+// Background Animation
+const canvas=document.getElementById('aiCanvas');
+const ctx=canvas.getContext('2d');
+let w=canvas.width=innerWidth,h=canvas.height=innerHeight;
+const nodes=Array.from({length:70},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.7,vy:(Math.random()-0.5)*0.7}));
+function animate(){
+ctx.clearRect(0,0,w,h);
+for(let i=0;i<nodes.length;i++){
+for(let j=i+1;j<nodes.length;j++){
+let dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<150){ctx.strokeStyle='rgba(0,198,255,'+(1-dist/150)+')';ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke();}}
+}
+nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>w)n.vx*=-1;if(n.y<0||n.y>h)n.vy*=-1;ctx.fillStyle='#00c6ff';ctx.beginPath();ctx.arc(n.x,n.y,2,0,Math.PI*2);ctx.fill();});
+requestAnimationFrame(animate);
+}
+animate();
+window.addEventListener('resize',()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight;});
+
+// Scroll Animation for About Cards
+const cards=document.querySelectorAll('.about-card');
+window.addEventListener('scroll',()=>{
+  cards.forEach(c=>{
+    const rect=c.getBoundingClientRect();
+    if(rect.top<window.innerHeight-100){c.classList.add('show');}
+  });
+});
+
+// Dark/Light Mode Toggle
+const toggleBtn=document.getElementById('themeToggle'); 
+toggleBtn.addEventListener('click',()=>{
+  document.body.classList.toggle('light');
+  toggleBtn.classList.toggle('fa-moon');
+  toggleBtn.classList.toggle('fa-sun');
+});
+</script>
+
+</body>
+</html>

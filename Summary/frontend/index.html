@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Summarizer Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        /* Floating card animation */
+        .container.tech-glow {
+            animation: floatCard 3.5s ease-in-out infinite alternate;
+        }
+        @keyframes floatCard {
+            0% { box-shadow: 0 8px 32px #4a90e236, 0 0 40px #2563eb22; transform: translateY(0);}
+            100% { box-shadow: 0 16px 48px #2563eb55, 0 0 60px #2563eb33; transform: translateY(-10px);}
+        }
+        /* Neon pulse for icon */
+        .icon.spin-tech {
+            animation: neonPulse 2.2s infinite alternate, spin 3s linear infinite;
+            filter: drop-shadow(0 0 8px #4a90e2cc);
+        }
+        @keyframes neonPulse {
+            0% { filter: drop-shadow(0 0 8px #4a90e2cc);}
+            100% { filter: drop-shadow(0 0 24px #2563ebcc);}
+        }
+        /* Button ripple effect */
+        .tech-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .tech-btn:active::after {
+            content: "";
+            position: absolute;
+            left: 50%; top: 50%;
+            width: 0; height: 0;
+            background: rgba(74,144,226,0.18);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 0.5s linear;
+            z-index: 1;
+        }
+        @keyframes ripple {
+            to {
+                width: 220px;
+                height: 220px;
+                opacity: 0;
+            }
+        }
+        /* Slide/fade for input sections */
+        .input-section.tech-fade {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px) scale(0.98);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .input-section.tech-fade.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+            animation: slideFadeIn 0.7s;
+        }
+        @keyframes slideFadeIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.98);}
+            100% { opacity: 1; transform: none;}
+        }
+        /* Output section slides in from right */
+        #outputSection.tech-fade {
+            animation: fadeInSummaryRight 0.8s;
+        }
+        @keyframes fadeInSummaryRight {
+            0% { opacity: 0; transform: translateX(40px);}
+            100% { opacity: 1; transform: none;}
+        }
+        /* Loader bounce */
+        .loader {
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: scale(1);}
+            100% { transform: scale(1.18);}
+        }
+    </style>
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
+    <div class="container tech-glow">
+        <h1 class="slide-in">
+            <img src="https://img.icons8.com/ios-filled/50/4a90e2/summary-list.png" alt="Summary Icon" class="icon spin-tech">
+            Summarizer Bot
+        </h1>
+        <p class="subtitle fade-in">Summarize PDF files or YouTube videos instantly.</p>
+        <div class="choice-buttons fade-in">
+            <button id="fileBtn" class="tech-btn pulse"><span>📄</span> PDF File</button>
+            <button id="youtubeBtn" class="tech-btn pulse"><span>▶️</span> YouTube Video</button>
+        </div>
+        <div id="fileInputSection" class="input-section tech-fade">
+            <label for="pdfFile" class="custom-file-upload">
+                <input type="file" id="pdfFile" accept=".pdf">
+                Choose PDF File
+            </label>
+            <button id="submitFile" class="action-btn tech-btn">Summarize File</button>
+        </div>
+        <div id="youtubeInputSection" class="input-section tech-fade">
+            <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL here">
+            <button id="submitYoutube" class="action-btn tech-btn">Summarize Video</button>
+        </div>
+        <div id="outputSection" class="tech-fade">
+            <h2>Summary</h2>
+            <div id="loader" class="loader"></div>
+            <pre id="summaryText"></pre>
+        </div>
+    </div>
+    <footer class="fade-in">
+        <p>Made with <span style="color:#e25555;">&#10084;</span> for productivity</p>
+    </footer>
+    <script src="app.js"></script>
+</body>
+</html>

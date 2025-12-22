@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>offline chatbot UI Clone</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Heroicons for modern icons -->
+    <script src="https://unpkg.com/heroicons@2.1.3/24/outline/index.js"></script>
+    <link rel="stylesheet" href="style.css">
+        <style>
+            body.light-mode .welcome-icon {
+                color: #111 !important;
+            }
+            body.light-mode .welcome-icon-bg {
+                background: #2563eb !important;
+                box-shadow: 0 4px 24px 0 rgba(37,99,235,0.15);
+            }
+            body.light-mode #user-menu {
+                background: #fff !important;
+                color: #222 !important;
+            }
+            body.light-mode #user-menu button {
+                color: #222 !important;
+            }
+            body.light-mode #user-menu .hover\:bg-white\/10:hover {
+                background: #e0e0e0 !important;
+            }
+            body.light-mode #user-menu .text-red-400 {
+                color: #b91c1c !important;
+            }
+            body.light-mode {
+                background: #fff !important;
+                color: #222 !important;
+            }
+            body.light-mode .bg-black\/90,
+            body.light-mode .bg-black\/80,
+            body.light-mode .bg-\[\#1C1C1C\],
+            body.light-mode .bg-gradient-to-t {
+                background: #fff !important;
+            }
+            body.light-mode .text-gray-200,
+            body.light-mode .text-white,
+            body.light-mode .text-gray-500 {
+                color: #222 !important;
+            }
+            body.light-mode .border-white\/10 {
+                border-color: #e0e0e0 !important;
+            }
+            body.light-mode .bg-blue-600 {
+                background: #2563eb !important;
+                color: #fff !important;
+            }
+            body.light-mode .bg-white\/10 {
+                background: #f5f5f5 !important;
+            }
+            body.light-mode .bg-\[\#2a2a2a\] {
+                background: #f5f5f5 !important;
+            }
+            body.light-mode .text-xs.text-gray-600 {
+                color: #222 !important;
+            }
+        </style>
+</head>
+<body class="text-gray-200" id="body">
+
+    <div class="flex h-screen">
+    <!-- Theme Toggle Button -->
+        <button id="mode-toggle" class="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full font-semibold shadow-md bg-gray-700 text-white transition-colors border border-gray-500/30 hover:bg-gray-900 hover:scale-105 active:scale-95 duration-150" style="font-size:0.95rem; min-width: 40px; min-height: 32px;" title="Toggle dark/light mode">
+                        <span id="mode-toggle-icon" style="display:flex; align-items:center; justify-content:center; width:24px; height:24px;">
+                                                            <!-- Attractive moon icon for dark mode -->
+                                                            <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" style="display:inline;">
+                                                                <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" fill="#6366F1" stroke="#6366F1" stroke-width="2" />
+                                                                <circle cx="15" cy="9" r="1.5" fill="#fff" />
+                                                            </svg>
+                                                            <!-- Attractive sun icon for light mode -->
+                                                            <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" style="display:none;">
+                                                                <circle cx="12" cy="12" r="5" fill="#FBBF24" stroke="#F59E42" stroke-width="2" />
+                                                                <g stroke="#F59E42" stroke-width="2">
+                                                                    <line x1="12" y1="2" x2="12" y2="6" />
+                                                                    <line x1="12" y1="18" x2="12" y2="22" />
+                                                                    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
+                                                                    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
+                                                                    <line x1="2" y1="12" x2="6" y2="12" />
+                                                                    <line x1="18" y1="12" x2="22" y2="12" />
+                                                                    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24" />
+                                                                    <line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+                                                                </g>
+                                                                <circle cx="17" cy="7" r="1.2" fill="#fff" />
+                                                            </svg>
+                        </span>
+        </button>
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-black/90 w-72 p-3 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-30 backdrop-blur-sm border-r border-white/10">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="bg-white/10 p-1.5 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h6m-7 8v-2a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 012-2zm12-14V6a2 2 0 00-2-2H8a2 2 0 00-2 2v2" />
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-lg">offline chatbot</span>
+                </div>
+                <button class="p-2 rounded-lg hover:bg-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Pinned Conversations -->
+            <div>
+                <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Pinned</h3>
+                <nav class="flex flex-col gap-1">
+                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-white/5 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.353-.026.692-.026 1.038 0 .984.084 1.75.93 1.75 1.908v1.392m-6.375 0h6.375m-6.375 0v6.375c0 1.135.845 2.098 1.976 2.192.353.026.692-.026 1.038 0 .984.084 1.75.93 1.75 1.908v1.392m-6.375 0h6.375" /></svg>
+                        <span class="truncate">2025 UI/UX Design Trends</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Chat History -->
+            <div class="flex-grow mt-6 overflow-y-auto custom-scrollbar -mr-3 pr-3">
+                 <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recent</h3>
+                <nav class="flex flex-col gap-1">
+                    <a href="#" class="px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-white/5 transition-colors duration-200 truncate">
+                        Understanding Quantum Computing
+                    </a>
+                    <a href="#" class="px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-white/5 transition-colors duration-200 truncate">
+                        Recipe for a perfect pizza
+                    </a>
+                    <a href="#" class="px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-white/5 transition-colors duration-200 truncate">
+                        JavaScript Promises vs Async/Await
+                    </a>
+                     <a href="#" class="px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-white/5 transition-colors duration-200 truncate">
+                        How to train a dragon (metaphorically)
+                    </a>
+                </nav>
+            </div>
+
+            <!-- User Menu -->
+            <div class="border-t border-white/10 mt-auto pt-3">
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg text-sm font-medium hover:bg-white/5 transition-colors duration-200">
+                    <div class="w-7 h-7 flex-shrink-0 rounded-full flex items-center justify-center bg-blue-600 text-white font-bold">
+                        G
+                    </div>
+                    <span class="truncate font-semibold cursor-pointer" id="user-menu-toggle">Gowthami</span>
+                </a>
+                                <!-- User Dropdown Menu -->
+                                <div id="user-menu" class="absolute left-3 bottom-16 w-60 bg-black/95 rounded-xl shadow-2xl border border-white/10 py-2 hidden z-50">
+                                                        <button class="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-white font-medium text-base block">
+                                                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+                                                            Upgrade Plan
+                                                        </button>
+                                                        <button class="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-white font-medium text-base block">
+                                                            <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07l-1.41 1.41M6.34 17.66l-1.41 1.41m12.02 0l-1.41-1.41M6.34 6.34L4.93 4.93"/></svg>
+                                                            Personalization
+                                                        </button>
+                                                        <button class="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-white font-medium text-base block">
+                                                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 12 4.6V4a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09c0 .66.26 1.3.73 1.77z"/></svg>
+                                                            Settings
+                                                        </button>
+                                                        <button class="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-white font-medium text-base block">
+                                                                                                    <button id="help-btn" class="w-full flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-white font-medium text-base block relative">
+                                                                                                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 17l4 4 4-4M12 3v18"/></svg>
+                                                                                                        Help
+                                                                                                        <span class="ml-auto">
+                                                                                                            <svg class="w-4 h-4 text-gray-400 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                                                                                                        </span>
+                                                                                                    </button>
+                                    <!-- Help submenu box to the right -->
+                                    <div id="help-submenu" class="absolute left-full top-1/2 -translate-y-1/2 ml-2 w-64 bg-black/95 rounded-xl shadow-2xl border border-white/10 py-2 hidden z-50" style="max-height:180px; overflow-y:auto;">
+                                        <button class="w-full flex items-center gap-3 px-5 py-2 hover:bg-white/10 text-white font-medium text-base block" id="help-center-btn">
+                                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                                            Help Center
+                                        </button>
+                                        <button class="w-full flex items-center gap-3 px-5 py-2 hover:bg-white/10 text-white font-medium text-base block" id="release-notes-btn">
+                                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h5l2-2h5a2 2 0 012 2v12a2 2 0 01-2 2z"/></svg>
+                                            Release Notes
+                                        </button>
+                                        <button class="w-full flex items-center gap-3 px-5 py-2 hover:bg-white/10 text-white font-medium text-base block" id="terms-btn">
+                                            <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
+                                            Terms & Policies
+                                        </button>
+                                        <button class="w-full flex items-center gap-3 px-5 py-2 hover:bg-white/10 text-white font-medium text-base block" id="report-bug-btn">
+                                            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18.364 5.636l-1.414 1.414M6.343 17.657l-1.414 1.414M12 8v4M12 16h.01"/></svg>
+                                            Report Bug
+                                        </button>
+                                        <button class="w-full flex items-center gap-3 px-5 py-2 hover:bg-white/10 text-white font-medium text-base block" id="download-apps-btn">
+                                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 16v-4M12 8h.01"/><rect x="6" y="18" width="12" height="2" rx="1"/></svg>
+                                            Download Apps
+                                        </button>
+                                        <button class="w-full flex items-center gap-3 px-5 py-2 hover:bg-white/10 text-white font-medium text-base block" id="keyboard-apps-btn">
+                                            <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+                                            Keyboard Apps
+                                        </button>
+                                            <!-- Report Bug Modal -->
+                                        <div id="report-bug-modal" class="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-md flex items-center justify-center z-50 hidden">
+                                                <div class="bg-white dark:bg-[#222] rounded-3xl shadow-2xl w-full max-w-4xl p-16 relative flex flex-col items-center justify-center">
+                                                    <button id="close-report-bug" class="absolute top-6 right-6 text-gray-400 hover:text-red-500 text-3xl font-bold" title="Close" style="line-height:1; background:none; border:none; cursor:pointer;">
+                                                        &times;
+                                                    </button>
+                                                    <div class="flex justify-between items-center mb-4">
+                                                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">What happened?</h2>
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <label for="bug-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tell us about the issue you encountered</label>
+                                                        <textarea id="bug-description" rows="5" maxlength="2000" class="w-full border border-gray-300 dark:border-gray-700 rounded-lg p-3 text-gray-900 dark:text-white bg-gray-100 dark:bg-[#222] focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Describe the problem..."></textarea>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right" id="char-count">0/2000</div>
+                                                    </div>
+                                                    <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">Any information you share may be reviewed to help improve Offline chatbot. If you have additional questions, Contact support.</p>
+                                                    <button id="send-bug-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg self-end mt-2">Send</button>
+                                                </div>
+                                            </div>
+                                    </div>
+                                                                            </button>
+                                                        <div class="border-t border-white/10 my-2"></div>
+                                                        <button class="w-full flex items-center gap-3 px-5 py-3 hover:bg-red-600 text-red-400 font-medium text-base block">
+                                                            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+                                                            Log Out
+                                                        </button>
+                                </div>
+        </aside>
+    <!-- Logout Overlay -->
+    <div id="logout-overlay" class="fixed inset-0 bg-black/70 flex flex-col items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-[#222] rounded-2xl shadow-2xl max-w-md w-full p-10 flex flex-col items-center">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Sign up below to unlock the full potential of Offline Chatbot</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">By continuing, you agree to our</p>
+            <!-- You can add links to terms here if needed -->
+        </div>
+    </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col relative bg-[#1C1C1C]">
+            <!-- Mobile Header -->
+            <header class="md:hidden flex items-center justify-between p-2 bg-black/80 backdrop-blur-sm border-b border-white/10 sticky top-0 z-10">
+                <button id="menu-btn" class="p-2 rounded-lg hover:bg-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                </button>
+                <h1 class="text-lg font-semibold">New Chat</h1>
+                <button class="p-2 rounded-lg hover:bg-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                </button>
+            </header>
+
+            <!-- Chat Area -->
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Initial Welcome Message -->
+                    <div id="welcome-message" class="text-center py-20">
+                                    <div class="welcome-icon-bg inline-block bg-white/10 rounded-full p-3 mb-6 shadow-lg animate-bounce">
+                                        <svg class="welcome-icon w-10 h-10 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h4m-6 6v-2a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 012-2zm10-10V6a2 2 0 00-2-2H8a2 2 0 00-2 2v2" />
+                                        </svg>
+                                    </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white">How can I help you today?</h2>
+                    </div>
+                    <!-- Chat messages will be appended here -->
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="w-full bg-gradient-to-t from-black/50 to-transparent pt-4">
+                <div class="max-w-4xl mx-auto px-4">
+                    <div class="relative">
+                        <!-- Tools Popup -->
+                        <div id="tools-popup" class="tools-popup absolute bottom-full mb-3 w-full bg-[#2a2a2a] rounded-xl shadow-2xl p-2 opacity-0 transform scale-95 pointer-events-none">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <button class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 text-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25z" /></svg>
+                                    <div>
+                                        <p class="font-semibold">Create an image</p>
+                                        <p class="text-xs text-gray-400">Generate an image with DALL-E</p>
+                                    </div>
+                                </button>
+                                <button class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 text-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                                    <div>
+                                        <p class="font-semibold">Deep Research</p>
+                                        <p class="text-xs text-gray-400">Search the web and documents</p>
+                                    </div>
+                                </button>
+                                <button class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 text-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>
+                                    <div>
+                                        <p class="font-semibold">Write or code (Canvas)</p>
+                                        <p class="text-xs text-gray-400">Expand and edit in a scratchpad</p>
+                                    </div>
+                                </button>
+                                <button class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 text-left">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3.375 3.375 0 0116.5 4.219l-2.255 2.255a2.25 2.25 0 00-3.182 3.182l5.69 5.69a.75.75 0 001.06-1.06l-5.69-5.69a.75.75 0 010-1.06l2.255-2.255a1.875 1.875 0 00-2.652-2.652l-10.94 10.94a6 6 0 108.486 8.486l7.693-7.693a.75.75 0 00-1.06-1.06z" /></svg>
+                                    <div>
+                                        <p class="font-semibold">Upload file</p>
+                                        <p class="text-xs text-gray-400">Attach documents, images, or data</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        <form id="chat-form" class ="flex items-center gap-2">
+                            <button type="button" id="tools-btn" class="p-3 bg-[#2a2a2a] border border-white/10 rounded-xl shadow-lg hover:bg-white/10 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                            </button>
+                            <div class="w-full flex relative">
+                                <textarea id="chat-input" rows="1" class="w-full bg-[#2a2a2a] border border-white/10 rounded-xl shadow-lg py-3.5 pl-4 pr-14 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 custom-scrollbar" placeholder="Message offline chatbot..."></textarea>
+                                <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors">
+                                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <p class="text-xs text-center text-gray-600 pt-3 pb-3">offline chatbot can make mistakes. Consider checking important information.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-60 z-20 hidden md:hidden"></div>
+    <script src="script.js"></script>
+        <script>
+// Keyboard accessibility for sidebar search bar
+document.addEventListener('DOMContentLoaded', function() {
+    var sidebarForm = document.getElementById('sidebar-chat-form');
+    var sidebarInput = document.getElementById('sidebar-chat-input');
+    if (sidebarForm && sidebarInput) {
+        sidebarInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sidebarForm.requestSubmit();
+            }
+        });
+    }
+});
+        // Log Out overlay logic
+        const logoutBtn = document.querySelector('button.w-full.flex.items-center.gap-3.px-5.py-3.hover\:bg-red-600');
+        const logoutOverlay = document.getElementById('logout-overlay');
+        if (logoutBtn && logoutOverlay) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                logoutOverlay.style.display = 'flex';
+            });
+        }
+            // Report Bug modal logic
+            const reportBugBtn = document.getElementById('report-bug-btn');
+            const reportBugModal = document.getElementById('report-bug-modal');
+            const closeReportBug = document.getElementById('close-report-bug');
+            const bugDescription = document.getElementById('bug-description');
+            const charCount = document.getElementById('char-count');
+            if (reportBugBtn && reportBugModal && closeReportBug && bugDescription && charCount) {
+                reportBugBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    reportBugModal.style.display = 'flex';
+                });
+                closeReportBug.addEventListener('click', () => {
+                    reportBugModal.style.display = 'none';
+                });
+                bugDescription.addEventListener('input', () => {
+                    charCount.textContent = ${bugDescription.value.length}/2000;
+                });
+            }
+        </script>
+        <script>
+            // Help submenu click logic
+            const helpButton = document.getElementById("help-btn");
+            const helpSubmenu = document.getElementById("help-submenu");
+            if (helpButton && helpSubmenu) {
+                helpButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    helpSubmenu.style.display = helpSubmenu.style.display === 'block' ? 'none' : 'block';
+                });
+                document.addEventListener('click', (e) => {
+                    if (helpSubmenu.style.display === 'block' && !helpSubmenu.contains(e.target) && e.target !== helpButton) {
+                        helpSubmenu.style.display = 'none';
+                    }
+                });
+            }
+        </script>
+        <script>
+            // Theme toggle logic
+            const body = document.getElementById('body');
+            const modeToggle = document.getElementById('mode-toggle');
+            function setTheme(mode) {
+                const iconMoon = document.getElementById('icon-moon');
+                const iconSun = document.getElementById('icon-sun');
+                if (mode === 'dark') {
+                    body.classList.add('dark-mode');
+                    body.classList.remove('light-mode');
+                    iconMoon.style.display = 'inline';
+                    iconSun.style.display = 'none';
+                } else {
+                    body.classList.add('light-mode');
+                    body.classList.remove('dark-mode');
+                    iconMoon.style.display = 'none';
+                    iconSun.style.display = 'inline';
+                }
+            }
+            let theme = localStorage.getItem('theme') || 'dark';
+            setTheme(theme);
+            modeToggle.addEventListener('click', () => {
+                theme = theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+                setTheme(theme);
+            });
+
+            // User menu dropdown logic
+            const userMenuToggle = document.getElementById('user-menu-toggle');
+            const userMenu = document.getElementById('user-menu');
+            userMenuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+            });
+            document.addEventListener('click', (e) => {
+                if (userMenu.style.display === 'block' && !userMenu.contains(e.target) && e.target !== userMenuToggle) {
+                    userMenu.style.display = 'none';
+                }
+            });
+        </script>
+        <script>
+            // Theme toggle logic
+            const body = document.getElementById('body');
+            const modeToggle = document.getElementById('mode-toggle');
+            function setTheme(mode) {
+                if (mode === 'dark') {
+                    body.classList.add('dark-mode');
+                    body.classList.remove('light-mode');
+                    modeToggle.textContent = '🌞 Light Mode';
+                } else {
+                    body.classList.add('light-mode');
+                    body.classList.remove('dark-mode');
+                    modeToggle.textContent = '🌙 Dark Mode';
+                }
+            }
+            // Load theme from localStorage
+            let theme = localStorage.getItem('theme') || 'dark';
+            setTheme(theme);
+            modeToggle.addEventListener('click', () => {
+                theme = theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+                setTheme(theme);
+            });
+        </script>
+</body>
+</html>

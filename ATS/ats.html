@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATS Resume Checker</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f6fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 900px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 180px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        resize: vertical;
+    }
+
+    .btn {
+        margin-top: 15px;
+        background: #0066ff;
+        color: white;
+        padding: 10px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn:hover {
+        background: #0047b3;
+    }
+
+    .output-box {
+        margin-top: 25px;
+        padding: 15px;
+        background: #ecf0f1;
+        border-radius: 6px;
+    }
+
+    .score {
+        font-size: 22px;
+        font-weight: bold;
+        color: #0066ff;
+    }
+
+    ul {
+        margin-top: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>ATS Resume Checker</h2>
+
+    <label><strong>Paste Your Resume Text:</strong></label>
+    <textarea id="resumeText" placeholder="Paste your resume here..."></textarea>
+
+    <label><strong>Paste Job Description (JD):</strong></label>
+    <textarea id="jobText" placeholder="Paste job description here..."></textarea>
+
+    <button class="btn" onclick="checkATS()">Check ATS Score</button>
+
+    <div class="output-box" id="output" style="display:none;">
+        <p class="score" id="scoreOutput"></p>
+        <p><strong>Missing Keywords:</strong></p>
+        <ul id="missingKeywords"></ul>
+
+        <p><strong>Formatting Issues:</strong></p>
+        <ul id="formatIssues"></ul>
+    </div>
+</div>
+
+
+<script>
+function checkATS() {
+    let resume = document.getElementById("resumeText").value.toLowerCase();
+    let jobDescription = document.getElementById("jobText").value.toLowerCase();
+    
+    if (!resume || !jobDescription) {
+        alert("Please paste both resume and job description.");
+        return;
+    }
+
+    let jdWords = jobDescription.match(/\b[a-zA-Z]+\b/g);
+    let uniqueJDWords = [...new Set(jdWords)];
+
+    let matched = [];
+    let missing = [];
+
+    uniqueJDWords.forEach(word => {
+        if (resume.includes(word)) {
+            matched.push(word);
+        } else {
+            missing.push(word);
+        }
+    });
+
+    let score = ((matched.length / uniqueJDWords.length) * 100).toFixed(2);
+
+    // --- Formatting Issues ---
+    let issues = [];
+
+    if (resume.length < 400) issues.push("Resume content is too short.");
+    if (!resume.match(/\d{10}/)) issues.push("Phone number not detected.");
+    if (!resume.includes("@")) issues.push("Email address not detected.");
+    if (resume.split(" ").length > 2000) issues.push("Resume is too long; shorten to 1–2 pages.");
+
+    // --- Display Results ---
+    document.getElementById("output").style.display = "block";
+    document.getElementById("scoreOutput").innerHTML = "ATS Score: " + score + "%";
+
+    let missingList = document.getElementById("missingKeywords");
+    missingList.innerHTML = "";
+    missing.slice(0, 25).forEach(w => {
+        let li = document.createElement("li");
+        li.textContent = w;
+        missingList.appendChild(li);
+    });
+
+    let issueList = document.getElementById("formatIssues");
+    issueList.innerHTML = "";
+    issues.forEach(issue => {
+        let li = document.createElement("li");
+        li.textContent = issue;
+        issueList.appendChild(li);
+    });
+}
+</script>
+
+</body>
+</html>

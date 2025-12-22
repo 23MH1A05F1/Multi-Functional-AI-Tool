@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            min-width: 90%;
+            background: linear-gradient(135deg, #5350d7, #6963c8);
+            color: #333;
+            padding: 60px 0 20px 0;
+        }
+
+        .container {
+            background-color: #EDE8F5;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(228, 30, 30, 0.3);
+            padding: 50px;
+            width: 90%;
+            max-width: 1550px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: #444;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #3D52A0;
+            z-index: -1;
+        }
+
+        .nav-button {
+            background-color: #3D52A0;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button:hover {
+            background-color: #7091E6;
+        }
+
+        .search-box input {
+            width: 650px;
+            padding: 15px;
+            border-radius: 5px;
+            margin-left: 250px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .search-box i {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+        }
+
+        .m {
+            width: 70px;
+            padding: 15px;
+            border-radius: 5px;
+            color: white;
+            border: 1px solid #3D52A0;
+            background-color: #3D52A0;
+            margin-bottom: 20px;
+        }
+
+        .results {
+            margin-top: 20px;
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .book, .book-card {
+            border: 3px solid #3D52A0;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            background: #AD8BDA;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .book img, .book-card img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .book h3, .book-card h3 {
+            font-size: 0.6em;
+            margin: 10px 0;
+            color: #3D52A0;
+        }
+
+        .book p, .book-card p {
+            font-size: 0.9em;
+            color: #3D52A0;
+        }
+
+        /* Horizontal slider for books */
+        .book-slider {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .book-display {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        .arrow {
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #3D52A0;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .arrow:hover {
+            background-color: #020905;
+        }
+
+        .left-arrow {
+            position: absolute;
+            left: 0;
+        }
+
+        .right-arrow {
+            position: absolute;
+            right: 0;
+        }
+
+        /* Search history */
+        .search-history {
+            margin-top: 10px;
+            max-width: 650px;
+        }
+
+        .search-history div {
+            display: inline-block;
+            background-color: #f4f4f4;
+            padding: 5px 10px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .search-history div .remove {
+            position: absolute;
+            top: 3px;
+            right: 5px;
+            cursor: pointer;
+            color: rgb(20, 30, 228);
+            font-size: 1em;
+        }
+        .book-card img {
+        width: 150px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .book-card h4 {
+        font-size: 1em;
+        margin: 10px 0;
+        color: #7091E6;}
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .book-card {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .search-history div {
+        animation: slideIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .book-card {
+        animation: fadeIn 0.5s ease-in-out;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .book-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .search-history div {
+        animation: slideIn 0.5s ease-in-out;
+    }
+    .book-card img {
+        width: 150px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .book-card h4 {
+        font-size: 1em;
+        margin: 10px 0;
+        color: #2f7a06;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .history-button {
+        background-color: #8697C4;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        display: inline-block;
+        transition: background-color 0.3s;
+    }
+
+    .history-button:hover {
+        background-color: #6A5ACD;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href= "http://127.0.0.1:5500/my_library/library.html"class="nav-button">Home</a>
+        <a href="history.html" class="nav-button">History</a>
+        <h1>Online Library</h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for books..." onclick="searchFunction()">
+            <button class="m" onclick="searchFunction()">Search</button>
+        </div>
+        <div class="search-history" id="searchHistory"></div>
+        <div class="results" id="allResults"></div>
+
+        <!-- Categories -->
+        <section id="kids-books">
+            <h2>Kids Books</h2>
+            <div class="book-slider">
+                <button class="arrow left-arrow" onclick="moveSlider('kids-books-display', -300)">&#10094;</button>
+                <div class="book-display" id="kids-books-display"></div>
+                <button class="arrow right-arrow" onclick="moveSlider('kids-books-display', 300)">&#10095;</button>
+            </div>
+        </section>
+
+        <section id="iit-books">
+            <h2>IIT Books</h2>
+            <div class="book-slider">
+                <button class="arrow left-arrow" onclick="moveSlider('iit-books-display', -300)">&#10094;</button>
+                <div class="book-display" id="iit-books-display"></div>
+                <button class="arrow right-arrow" onclick="moveSlider('iit-books-display', 300)">&#10095;</button>
+            </div>
+        </section>
+
+        <section id="programming-books">
+            <h2>programming Books</h2>
+            <div class="book-slider">
+                <button class="arrow left-arrow" onclick="moveSlider('programming-books-display', -300)">&#10094;</button>
+                <div class="book-display" id="programming-books-display"></div>
+                <button class="arrow right-arrow" onclick="moveSlider('programming-books-display', 300)">&#10095;</button>
+            </div>
+        </section>
+    </div>
+    <script>
+
+        // Dummy book data
+        const booksData = {
+            'kids': [
+                { name: 'HIDE AND SEEK ', image:"https://cdn.shopify.com/s/files/1/2081/8163/files/02-Days_of_the_Week_Poster_for_Kids.png?v=1640172152", link: 'https://monkeypen.com/blogs/news/hide-and-seek-free-childrens-book-from-monkey-pen' },
+                { name: 'GINGER THE GIRAFFE', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/03-_Fruit_Poster_for_Kids.png?v=1640172152', link: 'https://monkeypen.com/blogs/news/ginger-the-giraffe-free-children-book' },
+                { name: 'DOING MY CHORES ', image:"https://cdn.shopify.com/s/files/1/2081/8163/files/003-DOING-MY-CHORES-th.jpg?v=1589846879", link: 'https://monkeypen.com/blogs/news/doing-my-chores-free-children-book' },
+                { name: 'DYLAN THE DRAGON ', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/011-DYLAN-THE-DRAGON-th.jpg?v=1589884735', link: 'https://monkeypen.com/blogs/news/dylan-the-dragon-free-children-book' },
+                { name: 'JESSIE THE RABBIT', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/012-JESSIE-THE-RABBIT-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/jessie-the-rabbit-free-children-book' },
+                { name: 'DO YOU WONDER WHY BUGS ARE GOOD?', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/013-DO-YOU-WONDER-WHY-BUGS-ARE-GOOD-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/do-you-wonder-why-bugs-are-good-free-children-book' },
+                { name: 'ABE THE SERVICE DOG', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/004-ABE-THE-SERVICE-DOG-th.jpg?v=1589884735', link: 'https://monkeypen.com/blogs/news/abe-the-service-dog-free-children-book' },
+                { name: ' SUNNY MEADOWS WOODLAND SCHOOL', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/005-SUNNY-MEADOWS-WOODLAND-SCHOOL-th.jpg?v=1589846879', link: 'https://monkeypen.com/blogs/news/sunny-meadows-woodland-school' },
+                { name: 'TOOTH FAIRY', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/006-TOOTH-FAIRY-th.jpg?v=1589884735', link: 'https://monkeypen.com/blogs/news/tooth-fairy-free-children-book' },
+                { name: 'THE CASE OF THE MISSING SMILE', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/008-THE-CASE-OF-THE-MISSING-SMILE-th.jpg?v=1589846879', link: 'https://monkeypen.com/blogs/news/the-case-of-the-missing-smile-free-children-book' },
+                { name: ' HOMEWORK - YUCK!', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/009-HOMEWORK-YUCK-th.jpg?v=1589846879', link: 'https://monkeypen.com/blogs/news/homework-yuck-free-children-book' },
+                { name: ' CAPTAIN FANTASTIC', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/010-CAPTAIN-FANTASTIC-th.jpg?v=1589846879', link: 'https://monkeypen.com/blogs/news/captain-fantastic-free-children-book' },
+                { name: 'A TRICK TRIKE', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/014-A-TRICK-TRIKE-th.jpg?v=1589884736', link: 'https://monkeypen.com/blogs/news/a-trick-trike-free-children-book' },
+                { name: ' KROAKER, THE BULLFROG', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/015-KROAKER-THE-BULLFROG-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/kroaker-the-bullfrog-free-children-book' },
+                { name: 'MIX IT UP', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/016-MIX-IT-UP-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/mix-it-up-free-children-book' },
+                { name: ' UP IN THE AIR', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/017-UP-IN-THE-AIR-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/up-in-the-air-free-children-book' },
+                { name: 'HEY MOM, WHAT IS DIVERSITY?', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/018-HEY-MOM-WHAT-IS-DIVERSITY-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/hey-mom-what-is-diversity-free-children-book' },
+                { name: 'BUBBLE FUN', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/019-BUBBLE-FUN-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/bubble-fun-free-children-book' },
+                { name: 'HECTOR THE HERMIT CRAB', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/020-HECTOR-THE-HERMIT-th.jpg?v=1589849801', link: 'https://monkeypen.com/blogs/news/hector-the-hermit-crab-free-children-book' },
+                { name: 'A DOG ON A LOG', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/023-A-DOG-ON-A-LOG-th.jpg?v=1589890624', link: 'https://monkeypen.com/blogs/news/a-dog-on-a-log-free-children-book' },
+                { name: 'ARE WE THERE YET?', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/024-ARE-WE-THERE-ET-th.jpg?v=1589890624', link: 'https://monkeypen.com/blogs/news/are-we-there-yet-free-children-book' },
+                { name: 'DRAGONS', image: 'https://cdn.shopify.com/s/files/1/2081/8163/files/025-DRAGONS-th.jpg?v=1589890624', link: 'https://monkeypen.com/blogs/news/dragons-free-children-book' },
+            ],
+            'iit': [
+                { name: 'Concrete Technology ', image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjhsxkRo83qck4KY0NYysgZv0OKvIUnHmG9hd_T1NTqfdCrRtqdupJ1n5yJ3W7HAVKQUTlMRV96RbWrL0CEgWXtA5UZZTgLF57TtvSuyp84l425o3iNAPIw1-j-kFxiPM6z7KZnr-NXkP3M/s1600/12+%25281%2529.png', link: 'https://www.studyguide360.com/2019/02/ncert-solutions-for-class-12-physics-chapter-1-electric-charges-and-fields.html' },
+                { name: 'Detailing of Reinforcement Concrete Structures', image: 'https://i0.wp.com/constructioncost.co/images/img/reinforced-structures-ebook.jpg', link: 'https://www.engineersaustralia.org.au/sites/default/files/resource-files/2017-01/Div_Syd_detailing_of_reinforcement_in_concrete_structures.pdf' },
+                { name: 'Algebraic Number Theory', image: 'https://www.bing.com/th?id=OIP.JXpy6_xlFdVIhhD7ypK_XQHaHa&w=190&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.math.iitb.ac.in/~srg/Lecnotes/kiel.pdf' },
+                { name: 'Eamcet Engineering', image: 'https://th.bing.com/th/id/OIP.mYNkoIYZNSIZrDYOEQi3kAAAAA?w=186&h=246&c=7&r=0&o=5&dpr=1.3&pid=1.7', link: 'https://www.google.co.in/books/edition/Telangana_EAMCET_Engineering_6_Years_Sol/fjAnEAAAQBAJ?hl=en&gbpv=1&dq=EAMCET+books+which+are+free+for+online+reading&printsec=frontcover' },
+                { name: 'Physics', image: 'https://www.bing.com/th?id=OIP.Jzd6xz7Mk5YtR_fK5MRRsQHaJy&w=139&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/EAMCET_Physics_Andhra_and_Telangana_Chap/EBvzDwAAQBAJ?hl=en&gbpv=1&dq=EAMCET+books+which+are+free+for+online+reading&printsec=frontcover' },
+                { name: 'Eamcet 20 years', image: 'https://www.bing.com/th?id=OIP.jbHbNRUyE1W_wwLo8AfEDAHaJw&w=136&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/Andhra_Pradesh_EAMCET_Engineering_20_Yea/lqwzEAAAQBAJ?hl=en&gbpv=1&dq=EAMCET+books+which+are+free+for+online+reading&printsec=frontcover' },
+                { name: 'Eamcet 19 years', image: 'https://www.bing.com/th?id=OIP.v1aXsQpSHpXPwvz0i40X3wHaJb&w=150&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/Telangana_EAMCET_Engineering_5_Years_Sol/sBrzDwAAQBAJ?hl=en&gbpv=1&dq=free+eamcet+books+for+online+reading&printsec=frontcover' },
+                { name: 'mathematics jee', image: 'https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1670524492i/64649761.jpg', link: 'https://www.google.co.in/books/edition/18_Years_Chapterwise_Solutions_Mathemati/Wks-EAAAQBAJ?hl=en&gbpv=1&dq=free+eamcet+books+for+online+reading&printsec=frontcover' },
+                { name: 'mathematics papers jee', image: 'https://www.bing.com/th?id=OIP.RTXgkOHqqln7YzV9-3u3UQHaJk&w=143&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/20_Years_Chapterwise_Topicwise_2021_2002/aQxYEAAAQBAJ?hl=en&gbpv=1&dq=free+eamcet+phys' },
+                { name: 'NEET physics', image: 'https://www.bing.com/th?id=OIP.__na1L57yOC075pd4-_TCAHaJn&w=139&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/Objective_Physics_for_NEET_Vol_1_2022/UaVgEAAAQBAJ?hl=en&gbpv=1&dq=free+neet+physics+books+for+online+reading&printsec=frontcover' },
+                { name: 'hand book chemistry', image:'https://www.bing.com/th?id=OIP.nAFI5kVyRHGP_1ejzhl9agHaLj&w=122&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/Oswaal_Handbook_of_Chemistry_Class_11_12/Q4_cDwAAQBAJ?hl=en&gbpv=1&dq=free+neet+physics+books+for+online+reading&printsec=frontcover' },
+                { name: 'biology ngta ', image: 'https://th.bing.com/th/id/OIP.rzFGc_TP7S6YD1aouUP9TgHaJV?w=186&h=235&c=7&r=0&o=5&dpr=1.3&pid=1.7', link: 'https://www.google.co.in/books/edition/Free_Sample_Objective_NCERT_Xtract_Biolo/fwpWEAAAQBAJ?hl=en&gbpv=1&dq=free+neet+physics+books+for+online+reading&printsec=frontcover' },
+                { name: 'dc physics quick ', image: 'https://www.bing.com/th?id=OIP.Jnf5QC61kSgxqWnZVyZwJAAAAA&w=120&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/Physics_Quick_Books/hNBSEAAAQBAJ?hl=en&gbpv=1&dq=free+neet+physics+books+for+online+reading&printsec=frontcover' },
+                { name: 'Agricultural & Medical', image: 'https://www.bing.com/th?id=OIP.fbTxZXhNY7clZwHZiXYTPAAAAA&w=120&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/AP_EAMCET_Agricultural_and_Medical_Entra/GXIKEQAAQBAJ?hl=en&gbpv=1&dq=free+eamcet+zoology+books+for+online+reading&pg=PA198&printsec=frontcover' },
+                { name: 'Telangana eamcet 2021-2015', image: 'https://th.bing.com/th/id/OIP.7-tpCPH_YKwAstFbFpWwogHaJu?w=186&h=244&c=7&r=0&o=5&dpr=1.3&pid=1.7', link: 'https://www.google.co.in/books/edition/Telangana_EAMCET_Engineering_2021_2015_S/SSRcEAAAQBAJ?hl=en&gbpv=1&dq=free+eamcet+botany+books+for+online+reading&printsec=frontcover' },
+                { name: ' chapterwise solutions', image: 'https://www.bing.com/th?id=OIP.KgAEGxeeKgdQbCdqPAUhxQAAAA&w=139&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.google.co.in/books/edition/18_Years_Chapterwise_Solutions_Mathemati/Wks-EAAAQBAJ?hl=en&gbpv=1&dq=free+eamcet+nit+books+for+online+reading&printsec=frontcover' },
+            ],
+            'programming': [
+                { name: 'Java Secrets', image: 'https://miro.medium.com/v2/resize:fit:1024/1*NmIU7C3cLxWTkAWcca-7Fw.png', link: 'https://www.freebookcentre.net/TestResults.php?q=java' },
+                { name: 'Quick Java', image:' https://images.routledge.com/common/jackets/crclarge/978100340/9781003402947.jpg', link: 'https://www.iitk.ac.in/esc101/share/downloads/javanotes5.pdf' },
+                { name: 'AJWT', image: 'https://www.bing.com/th?id=OIP.ka57W2txdN1syuTsqOxRMAAAAA&w=138&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.startertutorials.com/ajwt/res/notes/AJWTnotes.pdf' },
+                { name: 'Advanced Java', image: 'https://www.bing.com/th?id=OIP.oLPgrv-H0Qoa8c5sGWaK2gHaJp&w=147&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://sist.sathyabama.ac.in/sist_coursematerial/uploads/SBS1301.pdf' },
+                { name: 'Learning JavaFX', image: 'https://th.bing.com/th?id=OIP.XMcpZSGHrkbz5MZ-BCNOkAAAAA&w=79&h=104&c=7&bgcl=bf738f&r=0&o=6&dpr=1.3&pid=13.1', link: 'https://riptutorial.com/Download/javafx.pdf' },
+                { name: 'Creating a GUI With JFC/Swing', image: 'https://th.bing.com/th?id=OIP.13ucJ5EtslzC39qrH0rPXwHaE8&w=155&h=104&c=7&bgcl=252ecb&r=0&o=6&dpr=1.3&pid=13.1', link: 'https://homepage.divms.uiowa.edu/~slonnegr/oosd/22GUIProgramming.pdf' },
+                { name: 'Python Programming ', image: 'https://th.bing.com/th?id=OIP.4zW5K3ttwuXAJc7W0aGPQgHaJt&w=94&h=104&c=7&bgcl=70b45a&r=0&o=6&dpr=1.3&pid=13.1', link: 'https://www.rgmcet.edu.in/assets/img/departments/CSE/materials/R19/2-1/Python.pdf' },
+                { name: 'python functions', image: 'https://th.bing.com/th?id=OIP.g2G8XAPMHMdCjCBLIzwqUAAAAA&w=93&h=104&c=7&bgcl=3714ed&r=0&o=6&dpr=1.3&pid=13.1', link: 'https://web.stanford.edu/class/archive/cs/cs106ap/cs106ap.1198/lectures/6-PythonFunctions/6-Python_Functions.pdf' },
+                { name: 'Python ML', image: 'https://th.bing.com/th?id=OIP.g12qa7ROnrMHPVRLDqStcwHaJS&w=100&h=104&c=7&bgcl=dea478&r=0&o=6&dpr=1.3&pid=13.1', link: 'http://assets.digitalocean.com/books/python/machine-learning-projects-python.pdf' },
+                { name: 'How To Code in Python 3', image: 'https://th.bing.com/th?id=OIP.OVufk4yI_-NN7NlEmX6mLwAAAA&w=96&h=104&c=7&bgcl=f3c7cc&r=0&o=6&dpr=1.3&pid=13.1', link: 'https://assets.digitalocean.com/books/python/how-to-code-in-python.pdf' },
+                { name: 'HTML, CSS and JavaScript', image: 'https://th.bing.com/th?id=OIP.JptoOKIImN_CIlhPuItE9wAAAA&w=80&h=80&c=1&vt=10&bgcl=cf1ca0&r=0&o=6&dpr=1.3&pid=5.1', link: 'http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf' },
+                { name: ' HTML by Michael Gabrie', image: 'https://www.bing.com/th?id=OIP.BNIMDGGxdN_7ljxyP8eCwQHaJl&w=123&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.webdesign.org/downloads/Beginners_Guide_to_HTML.pdf' },
+                { name: 'Fundamentals of XML', image: 'https://www.bing.com/th?id=OIP.zJdn_pDBDxEp8CarvVYj1gHaJJ&w=136&h=185&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2', link: 'https://www.scss.tcd.ie/Owen.Conlan/CS7063/01%20Fundamentals%20of%20XML%20(2%20Lectures).ppt.pdf' },
+                { name: ' Computer Science', image: 'http://infolab.stanford.edu/~ullman/gifs/focs.gif', link: 'http://infolab.stanford.edu/~ullman/focs/ch01.pdf' },
+            ]
+        };
+
+        function loadBooks(category) {
+            const booksContainer = document.getElementById(`${category}-books-display`);
+            booksContainer.innerHTML = '';
+            booksData[category].forEach((book) => {
+                const bookCard = document.createElement('div');
+                bookCard.classList.add('book-card');
+                bookCard.innerHTML = `
+                    <img src="${book.image}" alt="${book.name}">
+                    <h4>${book.name}</h4>
+                `;
+                // Directly open the book link when clicking the book card
+                bookCard.addEventListener('click', () => window.open(book.link, '_blank'));
+                booksContainer.appendChild(bookCard);
+            });
+        }
+
+        // Move slider function
+        function moveSlider(containerId, scrollAmount) {
+            const container = document.getElementById(containerId);
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+
+        // Search history array
+        let searchHistory = [];
+
+        function searchFunction() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            let allResultsDiv = document.getElementById("allResults");
+            allResultsDiv.innerHTML = "";
+            searchGoogleBooks(query, allResultsDiv);
+            searchMyLibrary(query, allResultsDiv);
+
+            // Add search term to history if it's new
+            if (!searchHistory.includes(query)) {
+                searchHistory.push(query);
+                displaySearchHistory();
+            }
+        }
+
+        function searchGoogleBooks(query, allResultsDiv) {
+            let url = `https://www.googleapis.com/books/v1/volumes?q=${query}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.items) {
+                        data.items.forEach(book => {
+                            let title = book.volumeInfo.title;
+                            let authors = book.volumeInfo.authors ? book.volumeInfo.authors.join(", ") : "Unknown Author";
+                            let thumbnail = book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : "https://via.placeholder.com/128x192";
+                            let previewLink = book.volumeInfo.previewLink || "#";
+                            let bookDiv = document.createElement("div");
+                            bookDiv.className = "book";
+                            bookDiv.innerHTML = `
+                                <img src="${thumbnail}" alt="${title}" />
+                                <h3>${title}</h3>
+                                <p>${authors}</p>
+                                <a href="${previewLink}" target="_blank">View</a>
+                            `;
+                            allResultsDiv.appendChild(bookDiv);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching books:", error));
+        }
+
+        function searchMyLibrary(query, allResultsDiv) {
+            let myLibraryBooks = [
+                { title: "Head First Java", author: "Kathy Sierra", link: "https://drive.google.com" },
+                { title: "Data Structures with C", author: "Reema Thareja", link: "https://drive.google.com" },
+                { title: "Machine Learning for Beginners", author: "John Smith", link: "https://drive.google.com" }
+            ];
+            let filteredBooks = myLibraryBooks.filter(book => book.title.toLowerCase().includes(query.toLowerCase()));
+            filteredBooks.forEach(book => {
+                let bookDiv = document.createElement("div");
+                bookDiv.className = "book-card";
+                bookDiv.innerHTML = `
+                    <h3>${book.title}</h3>
+                    <p>${book.author}</p>
+                    <a href="${book.link}" target="_blank">View</a>
+                `;
+                allResultsDiv.appendChild(bookDiv);
+            });
+        }
+
+        // Display search history
+        function displaySearchHistory() {
+            const searchHistoryDiv = document.getElementById("searchHistory");
+            searchHistoryDiv.innerHTML = '';
+
+            searchHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.innerHTML = `
+                    ${item} <span class="remove" onclick="removeHistory(${index})">&times;</span>
+                `;
+                historyItem.addEventListener('click', () => {
+                    document.getElementById('searchInput').value = item;
+                    searchFunction();
+                });
+                searchHistoryDiv.appendChild(historyItem);
+            });
+        }
+
+        // Remove search history item
+        function removeHistory(index) {
+            searchHistory.splice(index, 1);
+            displaySearchHistory();
+        }
+
+        ['kids', 'iit', 'programming'].forEach(loadBooks);
+        function loadBooks(category) {
+        const booksContainer = document.getElementById(`${category}-books-display`);
+        booksContainer.innerHTML = '';
+        booksData[category].forEach((book) => {
+            const bookCard = document.createElement('div');
+            bookCard.classList.add('book-card');
+            bookCard.innerHTML = `
+                <img src="${book.image}" alt="${book.name}">
+                <h4>${book.name}</h4>
+            `;
+            // Directly open the book link when clicking the book card
+            bookCard.addEventListener('click', () => window.open(book.link, '_blank'));
+            booksContainer.appendChild(bookCard);
+        });
+    }
+       // Function to save book to history
+       function saveToHistory(book) {
+            let history = JSON.parse(localStorage.getItem('bookHistory')) || [];
+            history.push(book);
+            localStorage.setItem('bookHistory', JSON.stringify(history));
+        }
+
+        function loadBooks(category) {
+            const booksContainer = document.getElementById(`${category}-books-display`);
+            booksContainer.innerHTML = '';
+            booksData[category].forEach((book) => {
+                const bookCard = document.createElement('div');
+                bookCard.classList.add('book-card');
+                bookCard.innerHTML = `
+                    <img src="${book.image}" alt="${book.name}">
+                    <h4>${book.name}</h4>
+                `;
+                // Directly open the book link when clicking the book card
+                bookCard.addEventListener('click', () => {
+                    window.open(book.link, '_blank');
+                    saveToHistory(book);
+                });
+                booksContainer.appendChild(bookCard);
+            });
+        }
+    </script>
+</body>
+</html>
