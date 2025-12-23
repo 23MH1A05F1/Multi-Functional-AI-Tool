@@ -1,5 +1,6 @@
 
 # Multi-Functional AI Tools Workspace
+Demo link: https://23mh1a05f1.github.io/Multi-Functional-AI-Tool/ammu
 
 Welcome to this collection of practical AI-powered utilities and demos. This workspace bundles small, focused projects for tasks like resume building, chatbots, summarization, translation, image editing, and more. Each subproject is self-contained for quick testing or integration.
 
